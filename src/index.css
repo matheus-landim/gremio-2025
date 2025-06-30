@@ -142,6 +142,25 @@ All colors MUST be HSL.
     padding-left: 1rem !important;
     padding-right: 1rem !important;
   }
+
+  /* Print section separation */
+  .printable-section {
+    page-break-after: always;
+  }
+
+  .printable-section:last-child {
+    page-break-after: auto;
+  }
+
+  /* Hide all sections by default in print */
+  .printable-section {
+    display: none;
+  }
+
+  /* Show only the target section when printing */
+  .printable-section.print-active {
+    display: block !important;
+  }
 }
 
 /* Custom team badge animation */
@@ -171,4 +190,21 @@ All colors MUST be HSL.
 .card-hover:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 153, 216, 0.15);
+}
+
+/* Heart animation for liked items */
+.heart-liked {
+  animation: heartbeat 0.3s ease-in-out;
+}
+
+@keyframes heartbeat {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }

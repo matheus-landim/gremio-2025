@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Share2, Heart, Printer, MapPin, Clock, Calendar } from 'lucide-react';
+import { Share2, Heart, Printer, MapPin, Clock, Calendar, Trophy, Target, ClipboardList, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -17,6 +17,7 @@ interface Match {
   venue: string;
   status: 'finished' | 'upcoming';
   likes: number;
+  likedBy: string[];
   bestPlayers?: string[];
 }
 
@@ -33,6 +34,7 @@ const Index = () => {
       venue: "Society Granja Viana",
       status: "finished",
       likes: 15,
+      likedBy: [],
       bestPlayers: ["João Silva", "Pedro Santos"]
     },
     {
@@ -46,6 +48,7 @@ const Index = () => {
       venue: "Society Granja Viana",
       status: "finished",
       likes: 8,
+      likedBy: [],
       bestPlayers: ["Carlos Lima", "André Costa"]
     },
     {
@@ -56,7 +59,8 @@ const Index = () => {
       time: "14:00", 
       venue: "Society Granja Viana",
       status: "upcoming",
-      likes: 0
+      likes: 0,
+      likedBy: []
     },
     {
       id: 4,
@@ -66,44 +70,73 @@ const Index = () => {
       time: "16:00",
       venue: "Society Granja Viana", 
       status: "upcoming",
-      likes: 0
+      likes: 0,
+      likedBy: []
     }
   ]);
+
+  const [userId] = useState(() => 'user_' + Math.random().toString(36).substr(2, 9));
 
   const finishedMatches = matches.filter(match => match.status === 'finished');
   const upcomingMatches = matches.filter(match => match.status === 'upcoming');
 
   const handleLike = (matchId: number) => {
-    setMatches(prev => prev.map(match => 
-      match.id === matchId 
-        ? { ...match, likes: match.likes + 1 }
-        : match
-    ));
-    toast({
-      title: "Curtida adicionada!",
-      description: "Obrigado pelo seu apoio!"
-    });
+    setMatches(prev => prev.map(match => {
+      if (match.id === matchId) {
+        if (match.likedBy.includes(userId)) {
+          toast({
+            title: "Você já curtiu esta partida!",
+            description: "Cada usuário pode curtir apenas uma vez."
+          });
+          return match;
+        }
+        toast({
+          title: "Curtida adicionada!",
+          description: "Obrigado pelo seu apoio!"
+        });
+        return { 
+          ...match, 
+          likes: match.likes + 1,
+          likedBy: [...match.likedBy, userId]
+        };
+      }
+      return match;
+    }));
   };
 
   const handleWhatsAppShare = (match: Match) => {
     const message = match.status === 'finished' 
-      ? `🏆 CAMPEONATO INTERNO - Grêmio Cotia/SP\n\n${match.homeTeam} ${match.homeScore} x ${match.awayScore} ${match.awayTeam}\n📅 ${new Date(match.date).toLocaleDateString('pt-BR')}\n⏰ ${match.time}\n📍 ${match.venue}\n\n${match.bestPlayers ? `⭐ Melhores jogadores: ${match.bestPlayers.join(', ')}` : ''}`
-      : `🏆 CAMPEONATO INTERNO - Grêmio Cotia/SP\n\n📅 Próximo jogo:\n${match.homeTeam} x ${match.awayTeam}\n📅 ${new Date(match.date).toLocaleDateString('pt-BR')}\n⏰ ${match.time}\n📍 ${match.venue}`;
+      ? `CAMPEONATO INTERNO - Grêmio Cotia/SP\n\n${match.homeTeam} ${match.homeScore} x ${match.awayScore} ${match.awayTeam}\n${new Date(match.date).toLocaleDateString('pt-BR')} - ${match.time}\n${match.venue}\n\n${match.bestPlayers ? `Melhores jogadores: ${match.bestPlayers.join(', ')}` : ''}`
+      : `CAMPEONATO INTERNO - Grêmio Cotia/SP\n\nPróximo jogo:\n${match.homeTeam} x ${match.awayTeam}\n${new Date(match.date).toLocaleDateString('pt-BR')} - ${match.time}\n${match.venue}`;
     
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
 
-  const handlePrint = () => {
+  const handlePrint = (section: string) => {
+    const printableElements = document.querySelectorAll('.printable-section');
+    printableElements.forEach(el => {
+      (el as HTMLElement).style.display = 'none';
+    });
+    
+    const targetSection = document.querySelector(`.${section}`);
+    if (targetSection) {
+      (targetSection as HTMLElement).style.display = 'block';
+    }
+    
     window.print();
+    
+    printableElements.forEach(el => {
+      (el as HTMLElement).style.display = 'block';
+    });
   };
 
   const TeamBadge = ({ teamName }: { teamName: string }) => (
-    <div className="flex items-center gap-2">
-      <div className="w-8 h-8 bg-gradient-to-br from-[#0099D8] to-[#0272E7] rounded-full flex items-center justify-center text-white font-bold text-sm">
-        {teamName.split(' ')[1] || teamName.charAt(0)}
+    <div className="flex items-center gap-3">
+      <div className="w-10 h-10 bg-gradient-to-br from-[#0099D8] to-[#0272E7] rounded-full flex items-center justify-center text-white shadow-lg">
+        <Shield className="w-5 h-5" />
       </div>
-      <span className="font-semibold text-[#1C1C1C]">{teamName}</span>
+      <span className="font-semibold text-[#1C1C1C] text-lg">{teamName}</span>
     </div>
   );
 
@@ -112,32 +145,39 @@ const Index = () => {
       {/* Header */}
       <header className="bg-gradient-to-r from-[#0099D8] to-[#0272E7] text-white py-8 print:py-4">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl font-bold mb-2 print:text-2xl">CAMPEONATO INTERNO</h1>
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <Trophy className="w-8 h-8" />
+            <h1 className="text-4xl font-bold print:text-2xl">CAMPEONATO INTERNO</h1>
+            <Trophy className="w-8 h-8" />
+          </div>
           <p className="text-xl opacity-90 print:text-base">Grêmio Cotia/SP</p>
         </div>
       </header>
 
       <div className="container mx-auto px-4 py-8 print:py-4">
         {/* Resultados */}
-        <section className="mb-12 print:mb-8">
+        <section className="mb-12 print:mb-8 printable-section results-section">
           <div className="flex justify-between items-center mb-6 print:mb-4">
-            <h2 className="text-3xl font-bold text-[#1C1C1C] print:text-xl">📊 Tabela de Resultados</h2>
-            <Button onClick={handlePrint} variant="outline" className="print:hidden">
+            <div className="flex items-center gap-3">
+              <Trophy className="w-8 h-8 text-[#0099D8]" />
+              <h2 className="text-3xl font-bold text-[#1C1C1C] print:text-xl">Tabela de Resultados</h2>
+            </div>
+            <Button onClick={() => handlePrint('results-section')} variant="outline" className="print:hidden">
               <Printer className="w-4 h-4 mr-2" />
               Imprimir
             </Button>
           </div>
           
-          <div className="grid gap-4">
+          <div className="grid gap-6">
             {finishedMatches.map((match) => (
               <Card key={match.id} className="shadow-lg hover:shadow-xl transition-shadow">
-                <CardContent className="p-6">
-                  <div className="grid md:grid-cols-4 gap-4 items-center">
+                <CardContent className="p-8">
+                  <div className="grid md:grid-cols-4 gap-6 items-center">
                     {/* Teams and Score */}
                     <div className="md:col-span-2">
-                      <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center justify-between mb-6">
                         <TeamBadge teamName={match.homeTeam} />
-                        <div className="text-3xl font-bold text-[#0099D8] mx-4">
+                        <div className="text-4xl font-bold text-[#0099D8] mx-6">
                           {match.homeScore} - {match.awayScore}
                         </div>
                         <TeamBadge teamName={match.awayTeam} />
@@ -145,38 +185,39 @@ const Index = () => {
                     </div>
                     
                     {/* Match Info */}
-                    <div className="space-y-2 text-sm text-gray-600">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="w-4 h-4" />
-                        {new Date(match.date).toLocaleDateString('pt-BR')}
+                    <div className="space-y-3 text-gray-600">
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-5 h-5" />
+                        <span className="text-base">{new Date(match.date).toLocaleDateString('pt-BR')}</span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        {match.time}
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-5 h-5" />
+                        <span className="text-base">{match.time}</span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <MapPin className="w-4 h-4" />
-                        {match.venue}
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-5 h-5" />
+                        <span className="text-base">{match.venue}</span>
                       </div>
                     </div>
                     
                     {/* Actions and Best Players */}
-                    <div className="space-y-3">
-                      <div className="flex gap-2 print:hidden">
+                    <div className="space-y-4">
+                      <div className="flex gap-3 print:hidden">
                         <Button 
                           variant="outline" 
                           size="sm"
                           onClick={() => handleLike(match.id)}
-                          className="flex items-center gap-1"
+                          className="flex items-center gap-2"
+                          disabled={match.likedBy.includes(userId)}
                         >
-                          <Heart className="w-4 h-4" />
+                          <Heart className={`w-4 h-4 ${match.likedBy.includes(userId) ? 'fill-red-500 text-red-500' : ''}`} />
                           {match.likes}
                         </Button>
                         <Button 
                           variant="outline" 
                           size="sm"
                           onClick={() => handleWhatsAppShare(match)}
-                          className="flex items-center gap-1"
+                          className="flex items-center gap-2"
                         >
                           <Share2 className="w-4 h-4" />
                           WhatsApp
@@ -185,12 +226,17 @@ const Index = () => {
                       
                       {match.bestPlayers && (
                         <div className="text-sm">
-                          <p className="font-semibold text-[#0272E7] mb-1">⭐ Melhores jogadores:</p>
-                          {match.bestPlayers.map((player, index) => (
-                            <Badge key={index} variant="secondary" className="mr-1 mb-1">
-                              {player}
-                            </Badge>
-                          ))}
+                          <p className="font-semibold text-[#0272E7] mb-2 flex items-center gap-2">
+                            <Trophy className="w-4 h-4" />
+                            Melhores jogadores:
+                          </p>
+                          <div className="flex flex-wrap gap-1">
+                            {match.bestPlayers.map((player, index) => (
+                              <Badge key={index} variant="secondary" className="text-xs">
+                                {player}
+                              </Badge>
+                            ))}
+                          </div>
                         </div>
                       )}
                     </div>
@@ -202,55 +248,65 @@ const Index = () => {
         </section>
 
         {/* Próximos Jogos */}
-        <section className="mb-12 print:mb-8">
-          <h2 className="text-3xl font-bold text-[#1C1C1C] mb-6 print:text-xl print:mb-4">🎯 Próximos Jogos</h2>
+        <section className="mb-12 print:mb-8 printable-section upcoming-section">
+          <div className="flex justify-between items-center mb-6 print:mb-4">
+            <div className="flex items-center gap-3">
+              <Target className="w-8 h-8 text-[#0099D8]" />
+              <h2 className="text-3xl font-bold text-[#1C1C1C] print:text-xl">Próximos Jogos</h2>
+            </div>
+            <Button onClick={() => handlePrint('upcoming-section')} variant="outline" className="print:hidden">
+              <Printer className="w-4 h-4 mr-2" />
+              Imprimir
+            </Button>
+          </div>
           
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-2 gap-6">
             {upcomingMatches.map((match) => (
               <Card key={match.id} className="shadow-lg hover:shadow-xl transition-shadow">
                 <CardHeader className="bg-gradient-to-r from-[#0099D8] to-[#0272E7] text-white">
-                  <CardTitle className="text-center">
+                  <CardTitle className="text-center text-xl">
                     {match.homeTeam} x {match.awayTeam}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
-                  <div className="space-y-3">
-                    <div className="flex justify-between items-center">
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center mb-4">
                       <TeamBadge teamName={match.homeTeam} />
-                      <span className="text-2xl font-bold text-[#0272E7]">VS</span>
+                      <span className="text-3xl font-bold text-[#0272E7]">VS</span>
                       <TeamBadge teamName={match.awayTeam} />
                     </div>
                     
-                    <div className="text-center space-y-2 text-gray-600">
-                      <div className="flex items-center justify-center gap-1">
-                        <Calendar className="w-4 h-4" />
-                        {new Date(match.date).toLocaleDateString('pt-BR')}
+                    <div className="text-center space-y-3 text-gray-600">
+                      <div className="flex items-center justify-center gap-2">
+                        <Calendar className="w-5 h-5" />
+                        <span className="text-base">{new Date(match.date).toLocaleDateString('pt-BR')}</span>
                       </div>
-                      <div className="flex items-center justify-center gap-1">
-                        <Clock className="w-4 h-4" />
-                        {match.time}
+                      <div className="flex items-center justify-center gap-2">
+                        <Clock className="w-5 h-5" />
+                        <span className="text-base">{match.time}</span>
                       </div>
-                      <div className="flex items-center justify-center gap-1">
-                        <MapPin className="w-4 h-4" />
-                        {match.venue}
+                      <div className="flex items-center justify-center gap-2">
+                        <MapPin className="w-5 h-5" />
+                        <span className="text-base">{match.venue}</span>
                       </div>
                     </div>
                     
-                    <div className="flex justify-center gap-2 pt-4 print:hidden">
+                    <div className="flex justify-center gap-3 pt-4 print:hidden">
                       <Button 
                         variant="outline" 
                         size="sm"
                         onClick={() => handleLike(match.id)}
-                        className="flex items-center gap-1"
+                        className="flex items-center gap-2"
+                        disabled={match.likedBy.includes(userId)}
                       >
-                        <Heart className="w-4 h-4" />
+                        <Heart className={`w-4 h-4 ${match.likedBy.includes(userId) ? 'fill-red-500 text-red-500' : ''}`} />
                         {match.likes}
                       </Button>
                       <Button 
                         variant="outline" 
                         size="sm"
                         onClick={() => handleWhatsAppShare(match)}
-                        className="flex items-center gap-1"
+                        className="flex items-center gap-2"
                       >
                         <Share2 className="w-4 h-4" />
                         WhatsApp
@@ -264,18 +320,21 @@ const Index = () => {
         </section>
 
         {/* Tabela Completa */}
-        <section className="mb-8">
+        <section className="mb-8 printable-section table-section">
           <div className="flex justify-between items-center mb-6 print:mb-4">
-            <h2 className="text-3xl font-bold text-[#1C1C1C] print:text-xl">📋 Tabela Completa</h2>
+            <div className="flex items-center gap-3">
+              <ClipboardList className="w-8 h-8 text-[#0099D8]" />
+              <h2 className="text-3xl font-bold text-[#1C1C1C] print:text-xl">Tabela Completa</h2>
+            </div>
             <div className="flex gap-2 print:hidden">
-              <Button onClick={handlePrint} variant="outline">
+              <Button onClick={() => handlePrint('table-section')} variant="outline">
                 <Printer className="w-4 h-4 mr-2" />
                 Imprimir
               </Button>
               <Button 
                 onClick={() => {
-                  const message = `🏆 CAMPEONATO INTERNO - Grêmio Cotia/SP\n\n📋 Programação Completa:\n\n${matches.map(match => 
-                    `${match.homeTeam} x ${match.awayTeam}\n📅 ${new Date(match.date).toLocaleDateString('pt-BR')} - ${match.time}\n📍 ${match.venue}\n${match.status === 'finished' ? `Resultado: ${match.homeScore}-${match.awayScore}` : 'A realizar'}\n`
+                  const message = `CAMPEONATO INTERNO - Grêmio Cotia/SP\n\nProgramação Completa:\n\n${matches.map(match => 
+                    `${match.homeTeam} x ${match.awayTeam}\n${new Date(match.date).toLocaleDateString('pt-BR')} - ${match.time}\n${match.venue}\n${match.status === 'finished' ? `Resultado: ${match.homeScore}-${match.awayScore}` : 'A realizar'}\n`
                   ).join('\n')}`;
                   
                   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
@@ -295,50 +354,61 @@ const Index = () => {
                 <table className="w-full">
                   <thead className="bg-gradient-to-r from-[#0099D8] to-[#0272E7] text-white">
                     <tr>
-                      <th className="px-4 py-3 text-left">Data</th>
-                      <th className="px-4 py-3 text-left">Horário</th>
-                      <th className="px-4 py-3 text-left">Partida</th>
-                      <th className="px-4 py-3 text-left">Resultado</th>
-                      <th className="px-4 py-3 text-left">Local</th>
-                      <th className="px-4 py-3 text-left print:hidden">Ações</th>
+                      <th className="px-6 py-4 text-left font-semibold">Data</th>
+                      <th className="px-6 py-4 text-left font-semibold">Horário</th>
+                      <th className="px-6 py-4 text-left font-semibold">Partida</th>
+                      <th className="px-6 py-4 text-left font-semibold">Resultado</th>
+                      <th className="px-6 py-4 text-left font-semibold">Local</th>
+                      <th className="px-6 py-4 text-left font-semibold print:hidden">Ações</th>
                     </tr>
                   </thead>
                   <tbody>
                     {matches.map((match, index) => (
                       <tr key={match.id} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
-                        <td className="px-4 py-3 font-medium">
+                        <td className="px-6 py-4 font-medium text-base">
                           {new Date(match.date).toLocaleDateString('pt-BR')}
                         </td>
-                        <td className="px-4 py-3">{match.time}</td>
-                        <td className="px-4 py-3">
-                          <div className="font-semibold">
-                            {match.homeTeam} x {match.awayTeam}
+                        <td className="px-6 py-4 text-base">{match.time}</td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2">
+                              <Shield className="w-4 h-4 text-[#0099D8]" />
+                              <span className="font-semibold">{match.homeTeam}</span>
+                            </div>
+                            <span className="text-gray-500">x</span>
+                            <div className="flex items-center gap-2">
+                              <Shield className="w-4 h-4 text-[#0099D8]" />
+                              <span className="font-semibold">{match.awayTeam}</span>
+                            </div>
                           </div>
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-6 py-4">
                           {match.status === 'finished' ? (
-                            <span className="text-lg font-bold text-[#0099D8]">
+                            <span className="text-xl font-bold text-[#0099D8]">
                               {match.homeScore} - {match.awayScore}
                             </span>
                           ) : (
-                            <Badge variant="outline">A realizar</Badge>
+                            <Badge variant="outline" className="text-sm">A realizar</Badge>
                           )}
                         </td>
-                        <td className="px-4 py-3 text-sm text-gray-600">{match.venue}</td>
-                        <td className="px-4 py-3 print:hidden">
-                          <div className="flex gap-1">
+                        <td className="px-6 py-4 text-base text-gray-600">{match.venue}</td>
+                        <td className="px-6 py-4 print:hidden">
+                          <div className="flex gap-2">
                             <Button 
                               variant="ghost" 
                               size="sm"
                               onClick={() => handleLike(match.id)}
+                              disabled={match.likedBy.includes(userId)}
+                              className="flex items-center gap-1"
                             >
-                              <Heart className="w-4 h-4" />
+                              <Heart className={`w-4 h-4 ${match.likedBy.includes(userId) ? 'fill-red-500 text-red-500' : ''}`} />
                               {match.likes}
                             </Button>
                             <Button 
                               variant="ghost" 
                               size="sm"
                               onClick={() => handleWhatsAppShare(match)}
+                              className="flex items-center gap-1"
                             >
                               <Share2 className="w-4 h-4" />
                             </Button>
