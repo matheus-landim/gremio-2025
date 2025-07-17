@@ -24,8 +24,8 @@ interface Match {
 const Index = () => {
   const [matches, setMatches] = useState<Match[]>([
     {
-      id: 1,
-      homeTeam: "Grêmio A",
+      id: 0,
+      homeTeam: "Time B",
       awayTeam: "Grêmio B", 
       homeScore: 3,
       awayScore: 1,
@@ -37,22 +37,9 @@ const Index = () => {
       likedBy: [],
       bestPlayers: ["João Silva", "Pedro Santos"]
     },
+    /* Próximos jogos */
     {
       id: 2,
-      homeTeam: "Grêmio C",
-      awayTeam: "Grêmio D",
-      homeScore: 2,
-      awayScore: 2, 
-      date: "2024-06-25",
-      time: "16:00",
-      venue: "Society Granja Viana",
-      status: "finished",
-      likes: 8,
-      likedBy: [],
-      bestPlayers: ["Carlos Lima", "André Costa"]
-    },
-    {
-      id: 3,
       homeTeam: "Grêmio A",
       awayTeam: "Grêmio C",
       date: "2024-07-02",
@@ -63,7 +50,29 @@ const Index = () => {
       likedBy: []
     },
     {
-      id: 4,
+      id: 2.1,
+      homeTeam: "Grêmio B",
+      awayTeam: "Grêmio D",
+      date: "2024-07-02",
+      time: "16:00",
+      venue: "Society Granja Viana", 
+      status: "upcoming",
+      likes: 0,
+      likedBy: []
+    },
+    {
+      id: 2.2,
+      homeTeam: "Grêmio A",
+      awayTeam: "Grêmio C",
+      date: "2024-07-02",
+      time: "14:00", 
+      venue: "Society Granja Viana",
+      status: "upcoming",
+      likes: 0,
+      likedBy: []
+    },
+    {
+      id: 2.3,
       homeTeam: "Grêmio B",
       awayTeam: "Grêmio D",
       date: "2024-07-02",
@@ -99,7 +108,7 @@ const Index = () => {
         } else {
           // Add like
           toast({
-            title: "Curtida adicionada!",
+            title: "Curtida adicionada! ♥",
             description: "Obrigado pelo seu apoio!"
           });
           return { 
@@ -450,8 +459,8 @@ const Index = () => {
       {/* Footer */}
       <footer className="bg-[#1C1C1C] text-white py-4 sm:py-6 print:hidden">
         <div className="container mx-auto px-4 text-center">
-          <p className="text-sm sm:text-base">&copy; 2024 Grêmio Cotia/SP - Campeonato Interno</p>
-          <p className="text-xs sm:text-sm opacity-75 mt-1">Society Granja Viana</p>
+          <p className="text-sm sm:text-base">&copy; 2025 Grêmio Cotia/SP - Campeonato Interno</p>
+          <p className="text-xs sm:text-sm opacity-75 mt-1">Society Granja Viana • Agência Amplios</p>
         </div>
       </footer>
     </div>
