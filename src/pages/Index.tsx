@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Share2, Heart, Printer, MapPin, Clock, Calendar, Trophy, Target, ClipboardList } from 'lucide-react';
+import { Share2, ThumbsUp, Printer, MapPin, Clock, Calendar, Trophy, Target, ClipboardList, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -15,12 +15,13 @@ interface Match {
   time: string;
   venue: string;
   status: 'finished' | 'upcoming';
-  likes: number;
-  likedBy: string[];
   bestPlayers?: string[];
 }
 
 const Index = () => {
+  // Estado para controlar a animação do botão específico
+  const [animatingButtons, setAnimatingButtons] = useState<Set<string>>(new Set());
+
   // Função para formatar data corretamente (evita problema de fuso horário)
   const formatDateToBR = (dateString: string) => {
     const [year, month, day] = dateString.split('-');
@@ -46,11 +47,9 @@ const Index = () => {
   "Benfica": "https://upload.wikimedia.org/wikipedia/pt/thumb/d/de/Sport_Lisboa_e_Benfica.svg/250px-Sport_Lisboa_e_Benfica.svg.png",
   "Chelsea": "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg",
   "Atlético de Madrid": "https://upload.wikimedia.org/wikipedia/pt/thumb/c/c1/Atletico_Madrid_logo.svg/1200px-Atletico_Madrid_logo.svg.png"
-}
+};
 
-;
-
-  const [matches, setMatches] = useState<Match[]>([
+  const [matches] = useState<Match[]>([
     {
       id: 1,
       homeTeam: "Chelsea",
@@ -61,8 +60,6 @@ const Index = () => {
       time: "14:00",
       venue: "Society Granja Viana",
       status: "finished",
-      likes: 0,
-      likedBy: [],
       bestPlayers: []
     },
     /* ------------- PRÓXIMOS JOGOS ------------- */
@@ -73,9 +70,7 @@ const Index = () => {
       date: "2024-07-01",
       time: "14:00", 
       venue: "Society Granja Viana",
-      status: "upcoming",
-      likes: 0,
-      likedBy: []
+      status: "upcoming"
     },
     {
       id: 4,
@@ -84,48 +79,39 @@ const Index = () => {
       date: "2024-07-02",
       time: "16:00",
       venue: "Society Granja Viana", 
-      status: "upcoming",
-      likes: 0,
-      likedBy: []
+      status: "upcoming"
     }
   ]);
-
-  const [userId] = useState(() => 'user_' + Math.random().toString(36).substr(2, 9));
 
   const finishedMatches = matches.filter(match => match.status === 'finished');
   const upcomingMatches = matches.filter(match => match.status === 'upcoming');
 
-  const handleLike = (matchId: number) => {
-    setMatches(prev => prev.map(match => {
-      if (match.id === matchId) {
-        const hasLiked = match.likedBy.includes(userId);
-        
-        if (hasLiked) {
-          // Remove like
-          toast({
-            title: "Curtida removida!",
-            description: "Sua curtida foi removida."
-          });
-          return { 
-            ...match, 
-            likes: match.likes - 1,
-            likedBy: match.likedBy.filter(id => id !== userId)
-          };
-        } else {
-          // Add like
-          toast({
-            title: "Curtida adicionada!",
-            description: "Obrigado pelo seu apoio!"
-          });
-          return { 
-            ...match, 
-            likes: match.likes + 1,
-            likedBy: [...match.likedBy, userId]
-          };
-        }
-      }
-      return match;
-    }));
+  const handleSupport = (buttonId: string) => {
+    // Ativar animação apenas para este botão específico
+    setAnimatingButtons(prev => new Set(prev).add(buttonId));
+    
+    // Primeira mensagem: agradecimento
+    toast({
+      title: "Obrigado pelo seu apoio!",
+      description: "Seu apoio é muito importante para nós!"
+    });
+    
+    // Segunda mensagem: notificação após um pequeno delay
+    setTimeout(() => {
+      toast({
+        title: "Apoio registrado!",
+        description: "Um usuário demonstrou seu apoio ao time!"
+      });
+    }, 1500);
+
+    // Remover animação após 600ms
+    setTimeout(() => {
+      setAnimatingButtons(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(buttonId);
+        return newSet;
+      });
+    }, 600);
   };
 
   const handleWhatsAppShare = (match: Match) => {
@@ -168,15 +154,164 @@ const Index = () => {
     </div>
   );
 
+  // Componente do botão de apoio com animação específica
+  const SupportButton = ({
+    size = "sm",
+    variant = "outline" as const,
+    className = "",
+    buttonId
+  }: {
+    size?: "sm" | "ghost";
+    variant?: "outline" | "ghost";
+    className?: string;
+    buttonId: string;
+  }) => {
+    const isAnimating = animatingButtons.has(buttonId);
+    
+    return (
+      <Button 
+        variant={variant} 
+        size={size}
+        onClick={() => handleSupport(buttonId)}
+        className={`flex items-center gap-2 transition-all duration-300 ${
+          isAnimating 
+            ? 'animate-pulse scale-110 bg-green-100 border-green-400 text-green-700 shadow-lg' 
+            : 'hover:scale-105'
+        } ${className}`}
+      >
+        <ThumbsUp className={`${size === "sm" ? "w-4 h-4" : "w-3 h-3 sm:w-4 sm:h-4"} ${
+          isAnimating ? 'animate-bounce' : ''
+        }`} />
+        {size === "sm" ? "Dar Apoio" : "Apoio"}
+      </Button>
+    );
+  };
+
+  // Componente da Seção de Patrocinadores
+  const SponsorsSection = () => {
+    // Lista de patrocinadores com seus logos
+    const sponsors = [
+      {
+        name: "Nike",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg",
+        alt: "Nike Logo"
+      },
+      {
+        name: "Adidas", 
+        logo: "https://upload.wikimedia.org/wikipedia/commons/2/20/Adidas_Logo.svg",
+        alt: "Adidas Logo"
+      },
+      {
+        name: "Coca-Cola",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/c/ce/Coca-Cola_logo.svg", 
+        alt: "Coca-Cola Logo"
+      },
+      {
+        name: "Pepsi",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/0/0f/Pepsi_logo_2014.svg",
+        alt: "Pepsi Logo"
+      },
+      {
+        name: "Mastercard",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg",
+        alt: "Mastercard Logo"
+      },
+      {
+        name: "Samsung",
+        logo: "https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg",
+        alt: "Samsung Logo"
+      }
+    ];
+  
+    // Duplicamos a lista para criar o efeito de loop infinito
+    const duplicatedSponsors = [...sponsors, ...sponsors];
+  
+    return (
+      <section className="mb-8 sm:mb-12 print:mb-8 bg-white py-8 sm:py-12">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-8">
+            <Users className="w-6 h-6 sm:w-8 sm:h-8 text-[#0099D8]" />
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#1C1C1C] text-center">
+              Nossos Patrocinadores
+            </h2>
+          </div>
+          
+          {/* Container da rolagem */}
+          <div className="relative overflow-hidden bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg py-6 sm:py-8">
+            {/* Gradientes nas bordas para efeito de fade */}
+            <div className="absolute left-0 top-0 w-20 h-full bg-gradient-to-r from-gray-50 to-transparent z-10"></div>
+            <div className="absolute right-0 top-0 w-20 h-full bg-gradient-to-l from-gray-100 to-transparent z-10"></div>
+            
+            {/* Container dos logos com animação */}
+            <div className="flex animate-scroll">
+              {duplicatedSponsors.map((sponsor, index) => (
+                <div
+                  key={`${sponsor.name}-${index}`}
+                  className="flex-shrink-0 mx-6 sm:mx-8 lg:mx-12 flex items-center justify-center"
+                  style={{ minWidth: '120px' }}
+                >
+                  <img
+                    src={sponsor.logo}
+                    alt={sponsor.alt}
+                    className="h-12 sm:h-16 lg:h-20 w-auto object-contain filter grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110"
+                    onError={(e) => {
+                      // Fallback para caso a imagem não carregue
+                      e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
+                        <svg xmlns="http://www.w3.org/2000/svg" width="120" height="60" viewBox="0 0 120 60">
+                          <rect width="120" height="60" fill="#f3f4f6" stroke="#d1d5db" stroke-width="1"/>
+                          <text x="60" y="35" text-anchor="middle" font-family="Arial" font-size="12" fill="#6b7280">
+                            ${sponsor.name}
+                          </text>
+                        </svg>
+                      `)}`;
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <p className="text-center text-gray-600 text-sm sm:text-base mt-4">
+            Agradecemos o apoio de nossos parceiros que tornam este campeonato possível
+          </p>
+        </div>
+        
+        <style jsx>{`
+          @keyframes scroll {
+            0% {
+              transform: translateX(0);
+            }
+            100% {
+              transform: translateX(-50%);
+            }
+          }
+          
+          .animate-scroll {
+            animation: scroll 30s linear infinite;
+          }
+          
+          .animate-scroll:hover {
+            animation-play-state: paused;
+          }
+        `}</style>
+      </section>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50">
       {/* Header */}
       <header className="bg-gradient-to-r from-[#0099D8] to-[#0272E7] text-white py-6 sm:py-8 print:py-4">
         <div className="container mx-auto px-4 text-center">
-          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2">
-            <Trophy className="w-6 h-6 sm:w-8 sm:h-8" />
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold print:text-2xl">CAMPEONATO INTERNO</h1>
-            <Trophy className="w-6 h-6 sm:w-8 sm:h-8" />
+          <div className="flex flex-col items-center justify-center mb-2">
+            <img
+              src="https://i.imgur.com/f8jmMBX.png"
+              alt="Logo"
+              className="w-20 sm:w-24 md:w-28 lg:w-32 h-auto mb-2"
+            />
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold print:text-2xl">
+              CAMPEONATO INTERNO
+            </h1>
           </div>
           <p className="text-lg sm:text-xl opacity-90 print:text-base">Grêmio Cotia/SP</p>
         </div>
@@ -231,15 +366,7 @@ const Index = () => {
                     {/* Actions and Best Players */}
                     <div className="space-y-4">
                       <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 print:hidden">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => handleLike(match.id)}
-                          className="flex items-center gap-2"
-                        >
-                          <Heart className={`w-4 h-4 ${match.likedBy.includes(userId) ? 'fill-red-500 text-red-500' : ''}`} />
-                          {match.likes}
-                        </Button>
+                        <SupportButton buttonId={`result-${match.id}`} />
                         <Button 
                           variant="outline" 
                           size="sm"
@@ -251,7 +378,7 @@ const Index = () => {
                         </Button>
                       </div>
                       
-                      {match.bestPlayers && (
+                      {match.bestPlayers && match.bestPlayers.length > 0 && (
                         <div className="text-sm">
                           <p className="font-semibold text-[#0272E7] mb-2 flex items-center justify-center lg:justify-start gap-2">
                             <Trophy className="w-4 h-4" />
@@ -319,15 +446,7 @@ const Index = () => {
                     </div>
                     
                     <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-3 pt-4 print:hidden">
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => handleLike(match.id)}
-                        className="flex items-center gap-2"
-                      >
-                        <Heart className={`w-4 h-4 ${match.likedBy.includes(userId) ? 'fill-red-500 text-red-500' : ''}`} />
-                        {match.likes}
-                      </Button>
+                      <SupportButton buttonId={`upcoming-${match.id}`} />
                       <Button 
                         variant="outline" 
                         size="sm"
@@ -433,15 +552,7 @@ const Index = () => {
                         <td className="px-3 sm:px-6 py-3 sm:py-4 text-sm sm:text-base text-gray-600">{match.venue}</td>
                         <td className="px-3 sm:px-6 py-3 sm:py-4 print:hidden">
                           <div className="flex flex-col sm:flex-row gap-1 sm:gap-2">
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={() => handleLike(match.id)}
-                              className="flex items-center gap-1 text-xs sm:text-sm"
-                            >
-                              <Heart className={`w-3 h-3 sm:w-4 sm:h-4 ${match.likedBy.includes(userId) ? 'fill-red-500 text-red-500' : ''}`} />
-                              {match.likes}
-                            </Button>
+                            <SupportButton size="ghost" variant="ghost" className="text-xs sm:text-sm" buttonId={`table-${match.id}`} />
                             <Button 
                               variant="ghost" 
                               size="sm"
@@ -460,6 +571,10 @@ const Index = () => {
             </CardContent>
           </Card>
         </section>
+
+        {/* NOVA SEÇÃO DE PATROCINADORES */}
+        <SponsorsSection />
+
       </div>
 
       {/* Footer */}
@@ -474,3 +589,5 @@ const Index = () => {
 };
 
 export default Index;
+
+
