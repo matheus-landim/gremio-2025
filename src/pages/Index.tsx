@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Share2, ThumbsUp, Printer, MapPin, Clock, Calendar, Trophy, Target, ClipboardList, Users } from 'lucide-react';
+import { Share2, ThumbsUp, Printer, MapPin, Clock, Calendar, Trophy, Target, ClipboardList } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -50,6 +50,7 @@ const Index = () => {
 };
 
   const [matches] = useState<Match[]>([
+    /*
     {
       id: 1,
       homeTeam: "Chelsea",
@@ -62,25 +63,82 @@ const Index = () => {
       status: "finished",
       bestPlayers: []
     },
+    */
+   
     /* ------------- PRÓXIMOS JOGOS ------------- */
+    
     {
-      id: 3,
-      homeTeam: "Borussia Dortmund",
-      awayTeam: "Red Bull Salzburg",
-      date: "2024-07-01",
-      time: "14:00", 
-      venue: "Society Granja Viana",
-      status: "upcoming"
-    },
-    {
-      id: 4,
-      homeTeam: "Inter Miami",
-      awayTeam: "Boca Juniors",
-      date: "2024-07-02",
-      time: "16:00",
-      venue: "Society Granja Viana", 
-      status: "upcoming"
-    }
+    id: 1,
+    homeTeam: "Benfica",
+    awayTeam: "River Plate",
+    date: "2025-08-24",
+    time: "13:30",
+    venue: "Society Granja Viana",
+    status: "upcoming"
+  },
+  {
+    id: 2,
+    homeTeam: "Chelsea",
+    awayTeam: "Juventus",
+    date: "2025-08-24",
+    time: "13:30",
+    venue: "Society Granja Viana",
+    status: "upcoming"
+  },
+  {
+    id: 3,
+    homeTeam: "Red Bull Salzburg",
+    awayTeam: "Atlético de Madrid",
+    date: "2025-08-24",
+    time: "14:25",
+    venue: "Society Granja Viana",
+    status: "upcoming"
+  },
+  {
+    id: 4,
+    homeTeam: "Borussia Dortmund",
+    awayTeam: "Inter Milan",
+    date: "2025-08-24",
+    time: "14:25",
+    venue: "Society Granja Viana",
+    status: "upcoming"
+  },
+  {
+    id: 5,
+    homeTeam: "Real Madrid",
+    awayTeam: "Manchester City",
+    date: "2025-08-24",
+    time: "15:20",
+    venue: "Society Granja Viana",
+    status: "upcoming"
+  },
+  {
+    id: 6,
+    homeTeam: "Boca Juniors",
+    awayTeam: "Inter Miami",
+    date: "2025-08-24",
+    time: "16:15",
+    venue: "Society Granja Viana",
+    status: "upcoming"
+  },
+  {
+    id: 7,
+    homeTeam: "Bayern",
+    awayTeam: "Porto",
+    date: "2025-08-24",
+    time: "17:10",
+    venue: "Society Granja Viana",
+    status: "upcoming"
+  },
+  {
+    id: 8,
+    homeTeam: "Paris Saint-Germain",
+    awayTeam: "Al-Hilal",
+    date: "2025-08-24",
+    time: "18:00",
+    venue: "Society Granja Viana",
+    status: "upcoming"
+  }
   ]);
 
   const finishedMatches = matches.filter(match => match.status === 'finished');
@@ -155,11 +213,11 @@ const Index = () => {
   );
 
   // Componente do botão de apoio com animação específica
-  const SupportButton = ({
-    size = "sm",
-    variant = "outline" as const,
+  const SupportButton = ({ 
+    size = "sm", 
+    variant = "outline" as const, 
     className = "",
-    buttonId
+    buttonId 
   }: {
     size?: "sm" | "ghost";
     variant?: "outline" | "ghost";
@@ -184,117 +242,6 @@ const Index = () => {
         }`} />
         {size === "sm" ? "Dar Apoio" : "Apoio"}
       </Button>
-    );
-  };
-
-  // Componente da Seção de Patrocinadores
-  const SponsorsSection = () => {
-    // Lista de patrocinadores com seus logos
-    const sponsors = [
-      {
-        name: "Nike",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/a/a6/Logo_NIKE.svg",
-        alt: "Nike Logo"
-      },
-      {
-        name: "Adidas", 
-        logo: "https://upload.wikimedia.org/wikipedia/commons/2/20/Adidas_Logo.svg",
-        alt: "Adidas Logo"
-      },
-      {
-        name: "Coca-Cola",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/c/ce/Coca-Cola_logo.svg", 
-        alt: "Coca-Cola Logo"
-      },
-      {
-        name: "Pepsi",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/0/0f/Pepsi_logo_2014.svg",
-        alt: "Pepsi Logo"
-      },
-      {
-        name: "Mastercard",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/b/b7/MasterCard_Logo.svg",
-        alt: "Mastercard Logo"
-      },
-      {
-        name: "Samsung",
-        logo: "https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg",
-        alt: "Samsung Logo"
-      }
-    ];
-  
-    // Duplicamos a lista para criar o efeito de loop infinito
-    const duplicatedSponsors = [...sponsors, ...sponsors];
-  
-    return (
-      <section className="mb-8 sm:mb-12 print:mb-8 bg-white py-8 sm:py-12">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-8">
-            <Users className="w-6 h-6 sm:w-8 sm:h-8 text-[#0099D8]" />
-            <h2 className="text-2xl sm:text-3xl font-bold text-[#1C1C1C] text-center">
-              Nossos Patrocinadores
-            </h2>
-          </div>
-          
-          {/* Container da rolagem */}
-          <div className="relative overflow-hidden bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg py-6 sm:py-8">
-            {/* Gradientes nas bordas para efeito de fade */}
-            <div className="absolute left-0 top-0 w-20 h-full bg-gradient-to-r from-gray-50 to-transparent z-10"></div>
-            <div className="absolute right-0 top-0 w-20 h-full bg-gradient-to-l from-gray-100 to-transparent z-10"></div>
-            
-            {/* Container dos logos com animação */}
-            <div className="flex animate-scroll">
-              {duplicatedSponsors.map((sponsor, index) => (
-                <div
-                  key={`${sponsor.name}-${index}`}
-                  className="flex-shrink-0 mx-6 sm:mx-8 lg:mx-12 flex items-center justify-center"
-                  style={{ minWidth: '120px' }}
-                >
-                  <img
-                    src={sponsor.logo}
-                    alt={sponsor.alt}
-                    className="h-12 sm:h-16 lg:h-20 w-auto object-contain filter grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110"
-                    onError={(e) => {
-                      // Fallback para caso a imagem não carregue
-                      e.currentTarget.src = `data:image/svg+xml;base64,${btoa(`
-                        <svg xmlns="http://www.w3.org/2000/svg" width="120" height="60" viewBox="0 0 120 60">
-                          <rect width="120" height="60" fill="#f3f4f6" stroke="#d1d5db" stroke-width="1"/>
-                          <text x="60" y="35" text-anchor="middle" font-family="Arial" font-size="12" fill="#6b7280">
-                            ${sponsor.name}
-                          </text>
-                        </svg>
-                      `)}`;
-                    }}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-          
-          <p className="text-center text-gray-600 text-sm sm:text-base mt-4">
-            Agradecemos o apoio de nossos parceiros que tornam este campeonato possível
-          </p>
-        </div>
-        
-        <style jsx>{`
-          @keyframes scroll {
-            0% {
-              transform: translateX(0);
-            }
-            100% {
-              transform: translateX(-50%);
-            }
-          }
-          
-          .animate-scroll {
-            animation: scroll 30s linear infinite;
-          }
-          
-          .animate-scroll:hover {
-            animation-play-state: paused;
-          }
-        `}</style>
-      </section>
     );
   };
 
@@ -571,10 +518,6 @@ const Index = () => {
             </CardContent>
           </Card>
         </section>
-
-        {/* NOVA SEÇÃO DE PATROCINADORES */}
-        <SponsorsSection />
-
       </div>
 
       {/* Footer */}
@@ -589,5 +532,3 @@ const Index = () => {
 };
 
 export default Index;
-
-
