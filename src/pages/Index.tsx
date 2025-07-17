@@ -229,7 +229,6 @@ const Index = () => {
     return (
       <Button 
         variant={variant} 
-        size={size}
         onClick={() => handleSupport(buttonId)}
         className={`flex items-center gap-2 transition-all duration-300 ${
           isAnimating 
