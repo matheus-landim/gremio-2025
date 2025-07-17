@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Share2, Heart, Printer, MapPin, Clock, Calendar, Trophy, Target, ClipboardList } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -22,27 +21,56 @@ interface Match {
 }
 
 const Index = () => {
+  // Função para formatar data corretamente (evita problema de fuso horário)
+  const formatDateToBR = (dateString: string) => {
+    const [year, month, day] = dateString.split('-');
+    const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    return date.toLocaleDateString('pt-BR');
+  };
+
+  // Team images mapping
+  const teamImages: { [key: string]: string } = {
+  "Inter Milan": "https://upload.wikimedia.org/wikipedia/commons/0/05/FC_Internazionale_Milano_2021.svg",
+  "Al-Hilal": "https://upload.wikimedia.org/wikipedia/commons/5/55/Al_Hilal_SFC_Logo.svg",
+  "Porto": "https://upload.wikimedia.org/wikipedia/en/f/f1/FC_Porto.svg",
+  "Real Madrid": "https://upload.wikimedia.org/wikipedia/en/5/56/Real_Madrid_CF.svg",
+  "Borussia Dortmund": "https://upload.wikimedia.org/wikipedia/commons/6/67/Borussia_Dortmund_logo.svg",
+  "Red Bull Salzburg": "https://upload.wikimedia.org/wikipedia/pt/thumb/2/24/Red_Bull_Salzburg.png/250px-Red_Bull_Salzburg.png",
+  "Inter Miami": "https://upload.wikimedia.org/wikipedia/en/thumb/5/5c/Inter_Miami_CF_logo.svg/1200px-Inter_Miami_CF_logo.svg.png",
+  "Boca Juniors": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/CABJ70.png/1200px-CABJ70.png",
+  "Manchester City": "https://upload.wikimedia.org/wikipedia/en/e/eb/Manchester_City_FC_badge.svg",
+  "Bayern": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/FC_Bayern_M%C3%BCnchen_logo_%282024%29.svg/1200px-FC_Bayern_M%C3%BCnchen_logo_%282024%29.svg.png",
+  "Paris Saint-Germain": "https://upload.wikimedia.org/wikipedia/en/a/a7/Paris_Saint-Germain_F.C..svg",
+  "Juventus": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Juventus_FC_2017_logo_%28negative%29.jpg",
+  "River Plate": "https://upload.wikimedia.org/wikipedia/commons/a/ac/Escudo_del_C_A_River_Plate.svg",
+  "Benfica": "https://upload.wikimedia.org/wikipedia/pt/thumb/d/de/Sport_Lisboa_e_Benfica.svg/250px-Sport_Lisboa_e_Benfica.svg.png",
+  "Chelsea": "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg",
+  "Atlético de Madrid": "https://upload.wikimedia.org/wikipedia/pt/thumb/c/c1/Atletico_Madrid_logo.svg/1200px-Atletico_Madrid_logo.svg.png"
+}
+
+;
+
   const [matches, setMatches] = useState<Match[]>([
     {
-      id: 0,
-      homeTeam: "Time B",
-      awayTeam: "Grêmio B", 
+      id: 1,
+      homeTeam: "Chelsea",
+      awayTeam: "Atlético de Madrid", 
       homeScore: 3,
       awayScore: 1,
       date: "2024-06-25",
       time: "14:00",
       venue: "Society Granja Viana",
       status: "finished",
-      likes: 15,
+      likes: 0,
       likedBy: [],
-      bestPlayers: ["João Silva", "Pedro Santos"]
+      bestPlayers: []
     },
-    /* Próximos jogos */
+    /* ------------- PRÓXIMOS JOGOS ------------- */
     {
-      id: 2,
-      homeTeam: "Grêmio A",
-      awayTeam: "Grêmio C",
-      date: "2024-07-02",
+      id: 3,
+      homeTeam: "Borussia Dortmund",
+      awayTeam: "Red Bull Salzburg",
+      date: "2024-07-01",
       time: "14:00", 
       venue: "Society Granja Viana",
       status: "upcoming",
@@ -50,31 +78,9 @@ const Index = () => {
       likedBy: []
     },
     {
-      id: 2.1,
-      homeTeam: "Grêmio B",
-      awayTeam: "Grêmio D",
-      date: "2024-07-02",
-      time: "16:00",
-      venue: "Society Granja Viana", 
-      status: "upcoming",
-      likes: 0,
-      likedBy: []
-    },
-    {
-      id: 2.2,
-      homeTeam: "Grêmio A",
-      awayTeam: "Grêmio C",
-      date: "2024-07-02",
-      time: "14:00", 
-      venue: "Society Granja Viana",
-      status: "upcoming",
-      likes: 0,
-      likedBy: []
-    },
-    {
-      id: 2.3,
-      homeTeam: "Grêmio B",
-      awayTeam: "Grêmio D",
+      id: 4,
+      homeTeam: "Inter Miami",
+      awayTeam: "Boca Juniors",
       date: "2024-07-02",
       time: "16:00",
       venue: "Society Granja Viana", 
@@ -108,7 +114,7 @@ const Index = () => {
         } else {
           // Add like
           toast({
-            title: "Curtida adicionada! ♥",
+            title: "Curtida adicionada!",
             description: "Obrigado pelo seu apoio!"
           });
           return { 
@@ -124,8 +130,8 @@ const Index = () => {
 
   const handleWhatsAppShare = (match: Match) => {
     const message = match.status === 'finished' 
-      ? `CAMPEONATO INTERNO - Grêmio Cotia/SP\n\n${match.homeTeam} ${match.homeScore} x ${match.awayScore} ${match.awayTeam}\n${new Date(match.date).toLocaleDateString('pt-BR')} - ${match.time}\n${match.venue}\n\n${match.bestPlayers ? `Melhores jogadores: ${match.bestPlayers.join(', ')}` : ''}`
-      : `CAMPEONATO INTERNO - Grêmio Cotia/SP\n\nPróximo jogo:\n${match.homeTeam} x ${match.awayTeam}\n${new Date(match.date).toLocaleDateString('pt-BR')} - ${match.time}\n${match.venue}`;
+      ? `CAMPEONATO INTERNO - Grêmio Cotia/SP\n\n${match.homeTeam} ${match.homeScore} x ${match.awayScore} ${match.awayTeam}\n${formatDateToBR(match.date)} - ${match.time}\n${match.venue}`
+      : `CAMPEONATO INTERNO - Grêmio Cotia/SP\n\nPróximo jogo:\n${match.homeTeam} x ${match.awayTeam}\n${formatDateToBR(match.date)} - ${match.time}\n${match.venue}`;
     
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
@@ -153,7 +159,7 @@ const Index = () => {
     <div className="flex items-center gap-2 sm:gap-3">
       <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-[#0099D8] to-[#0272E7] rounded-full flex items-center justify-center overflow-hidden">
         <img 
-          src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=40&h=40&fit=crop&crop=center" 
+          src={teamImages[teamName] || teamImages["Inter Milan"]} 
           alt={`Escudo ${teamName}`}
           className="w-full h-full object-cover"
         />
@@ -210,7 +216,7 @@ const Index = () => {
                     <div className="space-y-2 sm:space-y-3 text-gray-600 text-center lg:text-left">
                       <div className="flex items-center justify-center lg:justify-start gap-2">
                         <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
-                        <span className="text-sm sm:text-base">{new Date(match.date).toLocaleDateString('pt-BR')}</span>
+                        <span className="text-sm sm:text-base">{formatDateToBR(match.date)}</span>
                       </div>
                       <div className="flex items-center justify-center lg:justify-start gap-2">
                         <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -300,7 +306,7 @@ const Index = () => {
                     <div className="text-center space-y-2 sm:space-y-3 text-gray-600">
                       <div className="flex items-center justify-center gap-2">
                         <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
-                        <span className="text-sm sm:text-base">{new Date(match.date).toLocaleDateString('pt-BR')}</span>
+                        <span className="text-sm sm:text-base">{formatDateToBR(match.date)}</span>
                       </div>
                       <div className="flex items-center justify-center gap-2">
                         <Clock className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -354,7 +360,7 @@ const Index = () => {
               <Button 
                 onClick={() => {
                   const message = `CAMPEONATO INTERNO - Grêmio Cotia/SP\n\nProgramação Completa:\n\n${matches.map(match => 
-                    `${match.homeTeam} x ${match.awayTeam}\n${new Date(match.date).toLocaleDateString('pt-BR')} - ${match.time}\n${match.venue}\n${match.status === 'finished' ? `Resultado: ${match.homeScore}-${match.awayScore}` : 'A realizar'}\n`
+                    `${match.homeTeam} x ${match.awayTeam}\n${formatDateToBR(match.date)} - ${match.time}\n${match.venue}\n${match.status === 'finished' ? `Resultado: ${match.homeScore}-${match.awayScore}` : 'A realizar'}\n`
                   ).join('\n')}`;
                   
                   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
@@ -387,7 +393,7 @@ const Index = () => {
                     {matches.map((match, index) => (
                       <tr key={match.id} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
                         <td className="px-3 sm:px-6 py-3 sm:py-4 font-medium text-sm sm:text-base">
-                          {new Date(match.date).toLocaleDateString('pt-BR')}
+                          {formatDateToBR(match.date)}
                         </td>
                         <td className="px-3 sm:px-6 py-3 sm:py-4 text-sm sm:text-base">{match.time}</td>
                         <td className="px-3 sm:px-6 py-3 sm:py-4">
@@ -395,7 +401,7 @@ const Index = () => {
                             <div className="flex items-center gap-1 sm:gap-2">
                               <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full overflow-hidden bg-gradient-to-br from-[#0099D8] to-[#0272E7]">
                                 <img 
-                                  src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=24&h=24&fit=crop&crop=center" 
+                                  src={teamImages[match.homeTeam] || teamImages["Inter Milan"]}
                                   alt={`Escudo ${match.homeTeam}`}
                                   className="w-full h-full object-cover"
                                 />
@@ -406,7 +412,7 @@ const Index = () => {
                             <div className="flex items-center gap-1 sm:gap-2">
                               <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full overflow-hidden bg-gradient-to-br from-[#0099D8] to-[#0272E7]">
                                 <img 
-                                  src="https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=24&h=24&fit=crop&crop=center" 
+                                  src={teamImages[match.awayTeam] || teamImages["Inter Milan"]}
                                   alt={`Escudo ${match.awayTeam}`}
                                   className="w-full h-full object-cover"
                                 />
@@ -460,7 +466,7 @@ const Index = () => {
       <footer className="bg-[#1C1C1C] text-white py-4 sm:py-6 print:hidden">
         <div className="container mx-auto px-4 text-center">
           <p className="text-sm sm:text-base">&copy; 2025 Grêmio Cotia/SP - Campeonato Interno</p>
-          <p className="text-xs sm:text-sm opacity-75 mt-1">Society Granja Viana • Agência Amplios</p>
+          <p className="text-xs sm:text-sm opacity-75 mt-1">Society Granja Viana</p>
         </div>
       </footer>
     </div>
