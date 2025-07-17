@@ -5,6 +5,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
 
+// Import sponsor logos
+import sponsorAdidas from '@/assets/sponsor-adidas.svg';
+import sponsorUnderArmour from '@/assets/sponsor-underarmour.svg';
+import sponsorBmw from '@/assets/sponsor-bmw.svg';
+import sponsorSamsung from '@/assets/sponsor-samsung.svg';
+import sponsorPepsi from '@/assets/sponsor-pepsi.svg';
+import sponsorAmazon from '@/assets/sponsor-amazon.svg';
+import sponsorGoogle from '@/assets/sponsor-google.png';
+import sponsorSportmax from '@/assets/sponsor-sportmax.png';
+import sponsorPowerplay from '@/assets/sponsor-powerplay.png';
+import sponsorElitekick from '@/assets/sponsor-elitekick.png';
+
 interface Match {
   id: number;
   homeTeam: string;
@@ -219,7 +231,7 @@ const Index = () => {
     className = "",
     buttonId 
   }: {
-    size?: "sm" | "ghost";
+    size?: "sm" | "default" | "lg" | "icon";
     variant?: "outline" | "ghost";
     className?: string;
     buttonId: string;
@@ -499,7 +511,7 @@ const Index = () => {
                         <td className="px-3 sm:px-6 py-3 sm:py-4 text-sm sm:text-base text-gray-600">{match.venue}</td>
                         <td className="px-3 sm:px-6 py-3 sm:py-4 print:hidden">
                           <div className="flex flex-col sm:flex-row gap-1 sm:gap-2">
-                            <SupportButton size="ghost" variant="ghost" className="text-xs sm:text-sm" buttonId={`table-${match.id}`} />
+                            <SupportButton size="icon" variant="ghost" className="text-xs sm:text-sm" buttonId={`table-${match.id}`} />
                             <Button 
                               variant="ghost" 
                               size="sm"
@@ -517,6 +529,52 @@ const Index = () => {
               </div>
             </CardContent>
           </Card>
+        </section>
+
+        {/* Sponsors Section */}
+        <section className="mb-8 sm:mb-12 print:mb-8">
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#1C1C1C] mb-4">Nossos Patrocinadores</h2>
+          </div>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 sm:gap-6">
+            {[
+              { logo: sponsorAdidas, name: 'Adidas' },
+              { logo: sponsorUnderArmour, name: 'Under Armour' },
+              { logo: sponsorBmw, name: 'BMW' },
+              { logo: sponsorSamsung, name: 'Samsung' },
+              { logo: sponsorPepsi, name: 'Pepsi' },
+              { logo: sponsorAmazon, name: 'Amazon' },
+              { logo: sponsorGoogle, name: 'Google' },
+              { logo: sponsorSportmax, name: 'SportMax' },
+              { logo: sponsorPowerplay, name: 'PowerPlay' },
+              { logo: sponsorElitekick, name: 'EliteKick' },
+              // Fill remaining spots with placeholders
+              ...Array.from({ length: 6 }, (_, i) => ({
+                logo: null,
+                name: `Patrocinador ${i + 11}`
+              }))
+            ].map((sponsor, index) => (
+              <div 
+                key={index}
+                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-4 aspect-square flex items-center justify-center border border-gray-200"
+              >
+                {sponsor.logo ? (
+                  <img 
+                    src={sponsor.logo}
+                    alt={sponsor.name}
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 rounded-md flex items-center justify-center">
+                    <span className="text-gray-400 text-xs sm:text-sm font-medium text-center">
+                      {sponsor.name}
+                    </span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </section>
       </div>
 

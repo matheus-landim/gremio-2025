@@ -161,6 +161,22 @@ All colors MUST be HSL.
   .printable-section.print-active {
     display: block !important;
   }
+
+  /* Fix upcoming games grid for print */
+  .upcoming-section .grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  .upcoming-section .card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Ensure proper spacing for print */
+  .upcoming-section {
+    margin-bottom: 2rem !important;
+  }
 }
 
 /* Custom team badge animation */
