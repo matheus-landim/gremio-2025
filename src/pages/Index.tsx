@@ -202,12 +202,14 @@ const Index = () => {
     const targetSection = document.querySelector(`.${section}`);
     if (targetSection) {
       (targetSection as HTMLElement).style.display = 'block';
+      (targetSection as HTMLElement).classList.add('print-active');
     }
     
     window.print();
     
     printableElements.forEach(el => {
       (el as HTMLElement).style.display = 'block';
+      el.classList.remove('print-active');
     });
   };
 
@@ -532,7 +534,7 @@ const Index = () => {
         </section>
 
         {/* Sponsors Section */}
-        <section className="mb-8 sm:mb-12 print:mb-8">
+        <section className="mb-8 sm:mb-12 print:hidden sponsors-grid">
           <div className="text-center mb-6 sm:mb-8">
             <h2 className="text-2xl sm:text-3xl font-bold text-[#1C1C1C] mb-4">Nossos Patrocinadores</h2>
           </div>
