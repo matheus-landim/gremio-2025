@@ -162,11 +162,9 @@ All colors MUST be HSL.
     display: block !important;
   }
 
-  /* Fix upcoming games grid for print - limit to 2 cards per row */
+  /* Fix upcoming games grid for print - show as blocks not columns */
   .upcoming-section .grid {
-    display: grid !important;
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 1rem !important;
+    display: block !important;
     max-width: 100% !important;
   }
 
@@ -176,7 +174,7 @@ All colors MUST be HSL.
     page-break-inside: avoid !important;
     width: 100% !important;
     max-width: 100% !important;
-    margin-bottom: 1rem !important;
+    margin-bottom: 1.5rem !important;
   }
   
   /* Ensure we only show 2 cards per page */
