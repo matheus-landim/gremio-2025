@@ -175,10 +175,16 @@ All colors MUST be HSL.
     width: 100% !important;
     max-width: 100% !important;
     margin-bottom: 1.5rem !important;
+    background: none !important;
+    box-shadow: none !important;
   }
   
-  /* Ensure we only show 2 cards per page */
-  .upcoming-section .grid > *:nth-child(2n) {
+  /* First page shows 2 cards, subsequent pages show 3 */
+  .upcoming-section .grid > *:first-child,
+  .upcoming-section .grid > *:nth-child(2) {
+    page-break-after: always !important;
+  }
+  .upcoming-section .grid > *:nth-child(n+3):nth-child(3n) {
     page-break-after: always !important;
   }
   
