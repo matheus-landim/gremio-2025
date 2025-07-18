@@ -5,6 +5,24 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { toast } from '@/hooks/use-toast';
 
+// Import sponsor logos
+import sponsorTresAPlus from '@/assets/sponsor-tresaplus.svg';
+import sponsorAlternativa from '@/assets/sponsor-alternativa.svg';
+import sponsorAmplios from '@/assets/sponsor-amplios.svg';
+import sponsorAya from '@/assets/sponsor-aya.svg';
+import sponsorBorges from '@/assets/sponsor-borges.svg';
+import sponsorCae from '@/assets/sponsor-cae.svg';
+import sponsorVersatil from '@/assets/sponsor-versatil.svg';
+import sponsorConstrubenx from '@/assets/sponsor-construbenx.svg';
+import sponsorBrillus from '@/assets/sponsor-brillus.svg';
+import sponsorCoralina from '@/assets/sponsor-coralina.svg';
+import sponsorCsm from '@/assets/sponsor-csm.svg'; 
+import sponsorKnn from '@/assets/sponsor-knn.svg';
+import sponsorMadreiva from '@/assets/sponsor-madreiva.svg';
+import sponsorMerciaballet from '@/assets/sponsor-merciaballet.svg';
+import sponsorSociety from '@/assets/sponsor-society.svg';
+import sponsorTonntech from '@/assets/sponsor-tonntech.svg';
+
 interface Match {
   id: number;
   homeTeam: string;
@@ -190,12 +208,14 @@ const Index = () => {
     const targetSection = document.querySelector(`.${section}`);
     if (targetSection) {
       (targetSection as HTMLElement).style.display = 'block';
+      (targetSection as HTMLElement).classList.add('print-active');
     }
     
     window.print();
     
     printableElements.forEach(el => {
       (el as HTMLElement).style.display = 'block';
+      el.classList.remove('print-active');
     });
   };
 
@@ -219,7 +239,7 @@ const Index = () => {
     className = "",
     buttonId 
   }: {
-    size?: "sm" | "ghost";
+    size?: "sm" | "default" | "lg" | "icon";
     variant?: "outline" | "ghost";
     className?: string;
     buttonId: string;
@@ -498,7 +518,7 @@ const Index = () => {
                         <td className="px-3 sm:px-6 py-3 sm:py-4 text-sm sm:text-base text-gray-600">{match.venue}</td>
                         <td className="px-3 sm:px-6 py-3 sm:py-4 print:hidden">
                           <div className="flex flex-col sm:flex-row gap-1 sm:gap-2">
-                            <SupportButton size="ghost" variant="ghost" className="text-xs sm:text-sm" buttonId={`table-${match.id}`} />
+                            <SupportButton size="icon" variant="ghost" className="text-xs sm:text-sm" buttonId={`table-${match.id}`} />
                             <Button 
                               variant="ghost" 
                               size="sm"
@@ -516,6 +536,53 @@ const Index = () => {
               </div>
             </CardContent>
           </Card>
+        </section>
+
+        {/* Sponsors Section */}
+        <section className="mb-8 sm:mb-12 print:hidden sponsors-grid">
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#1C1C1C] mb-4">Nossos Patrocinadores</h2>
+          </div>
+          
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 sm:gap-6">
+            {[
+              { logo: sponsorTresAPlus, name: '3APlus' },
+              { logo: sponsorAlternativa, name: 'Alternativa' },
+              { logo: sponsorAmplios, name: 'Amplios' },
+              { logo: sponsorAya, name: 'Aya' },
+              { logo: sponsorBorges, name: 'Borges' },
+              { logo: sponsorCae, name: 'Cae' },
+              { logo: sponsorVersatil, name: 'Versátil' },
+              { logo: sponsorConstrubenx, name: 'Construbenx' },
+              { logo: sponsorBrillus, name: 'Brillus' },
+              { logo: sponsorCoralina, name: 'Coralina' },
+              { logo: sponsorCsm, name: 'CSM' },
+              { logo: sponsorKnn, name: 'KNN' },
+              { logo: sponsorMadreiva, name: 'Madreiva' },
+              { logo: sponsorMerciaballet, name: 'Mercia Ballet' },
+              { logo: sponsorSociety, name: 'Society Granja Viana' },
+              { logo: sponsorTonntech, name: 'Tonntech' },
+            ].map((sponsor, index) => (
+              <div 
+                key={index}
+                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-4 aspect-square flex items-center justify-center border border-gray-200"
+              >
+                {sponsor.logo ? (
+                  <img 
+                    src={sponsor.logo}
+                    alt={sponsor.name}
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 rounded-md flex items-center justify-center">
+                    <span className="text-gray-400 text-xs sm:text-sm font-medium text-center">
+                      {sponsor.name}
+                    </span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </section>
       </div>
 

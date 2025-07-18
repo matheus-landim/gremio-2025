@@ -161,6 +161,36 @@ All colors MUST be HSL.
   .printable-section.print-active {
     display: block !important;
   }
+
+  /* Fix upcoming games grid for print - show as blocks not columns */
+  .upcoming-section .grid {
+    display: block !important;
+    max-width: 100% !important;
+  }
+
+  /* Ensure each card prints properly */
+  .upcoming-section .grid > * {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 1.5rem !important;
+  }
+  
+  /* Ensure we only show 2 cards per page */
+  .upcoming-section .grid > *:nth-child(2n) {
+    page-break-after: always !important;
+  }
+  
+  /* Hide sponsorship section when printing */
+  section:has(.sponsors-grid) {
+    display: none !important;
+  }
+
+  /* Ensure proper spacing for print */
+  .upcoming-section {
+    margin-bottom: 2rem !important;
+  }
 }
 
 /* Custom team badge animation */
