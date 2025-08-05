@@ -186,20 +186,31 @@ All colors MUST be HSL.
     box-shadow: none !important;
   }
 
-  /* Style the match info as simple text line */
+  /* Style the match info as simple text line with aligned columns */
   .upcoming-section .match-print-format {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    padding: 0.25rem 0 !important;
+    display: grid !important;
+    grid-template-columns: 2fr 1fr 1fr !important;
+    gap: 1rem !important;
+    padding: 0.5rem 0 !important;
     border-bottom: 1px solid #e5e7eb !important;
     font-size: 1rem !important;
     line-height: 1.5 !important;
+    align-items: center !important;
   }
 
   /* Hide team badges and VS text in print */
   .upcoming-section .print\\:hidden {
     display: none !important;
+  }
+
+  /* Remove scroll bar from table in print */
+  .table-section .overflow-x-auto {
+    overflow: visible !important;
+  }
+
+  .table-section table {
+    min-width: auto !important;
+    width: 100% !important;
   }
   
   /* Hide sponsorship section when printing */
