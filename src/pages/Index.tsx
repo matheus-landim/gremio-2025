@@ -544,45 +544,48 @@ const Index = () => {
             <h2 className="text-2xl sm:text-3xl font-bold text-[#1C1C1C] mb-4">Nossos Patrocinadores</h2>
           </div>
           
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 sm:gap-6">
-            {[
-              { logo: sponsorTresAPlus, name: '3APlus' },
-              { logo: sponsorAlternativa, name: 'Alternativa' },
-              { logo: sponsorAmplios, name: 'Amplios' },
-              { logo: sponsorAya, name: 'Aya' },
-              { logo: sponsorBorges, name: 'Borges' },
-              { logo: sponsorCae, name: 'Cae' },
-              { logo: sponsorVersatil, name: 'Versátil' },
-              { logo: sponsorConstrubenx, name: 'Construbenx' },
-              { logo: sponsorBrillus, name: 'Brillus' },
-              { logo: sponsorCoralina, name: 'Coralina' },
-              { logo: sponsorCsm, name: 'CSM' },
-              { logo: sponsorKnn, name: 'KNN' },
-              { logo: sponsorMadreiva, name: 'Madreiva' },
-              { logo: sponsorMerciaballet, name: 'Mercia Ballet' },
-              { logo: sponsorSociety, name: 'Society Granja Viana' },
-              { logo: sponsorTonntech, name: 'Tonntech' },
-            ].map((sponsor, index) => (
-              <div 
-                key={index}
-                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-4 aspect-square flex items-center justify-center border border-gray-200"
-              >
-                {sponsor.logo ? (
-                  <img 
-                    src={sponsor.logo}
-                    alt={sponsor.name}
-                    className="w-full h-full object-contain"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 rounded-md flex items-center justify-center">
-                    <span className="text-gray-400 text-xs sm:text-sm font-medium text-center">
-                      {sponsor.name}
-                    </span>
-                  </div>
-                )}
+                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4 sm:gap-6">
+        {[
+          { logo: sponsorTresAPlus, name: '3APlus', url: 'https://www.3aplus.com.br' },
+          { logo: sponsorAlternativa, name: 'Alternativa', url: 'https://www.alternativacoberturas.net.br/' },
+          { logo: sponsorAmplios, name: 'Amplios', url: 'https://www.agenciaamplios.com.br' },
+          { logo: sponsorAya, name: 'Aya', url: 'https://www.clinicaaya.com.br/' },
+          { logo: sponsorBorges, name: 'Borges', url: '#' },
+          { logo: sponsorCae, name: 'Cae', url: 'https://www.instagram.com/brillusesteticaautomotiva/' },
+          { logo: sponsorVersatil, name: 'Versátil', url: 'https://www.versatilseg.com.br' },
+          { logo: sponsorConstrubenx, name: 'Construbenx', url: 'hhttps://construbenx.com.br/' },
+          { logo: sponsorBrillus, name: 'Brillus', url: 'https://www.instagram.com/brillusesteticaautomotiva/' },
+          { logo: sponsorCoralina, name: 'Coralina', url: 'https://www.instagram.com/boutique.coralina/' },
+          { logo: sponsorCsm, name: 'CSM', url: 'https://www.csm.com.br/' },
+          { logo: sponsorKnn, name: 'KNN', url: 'https://www.knnidiomas.com.br/' },
+          { logo: sponsorMadreiva, name: 'Madreiva', url: 'https://www.colegiomadreiva.com.br/' },
+          { logo: sponsorMerciaballet, name: 'Mercia Ballet', url: 'https://www.merciaballet.com.br' },
+          { logo: sponsorSociety, name: 'Society Granja Viana', url: 'https://www.societygranjaviana.com.br' },
+          { logo: sponsorTonntech, name: 'Tonntech', url: 'https://www.instagram.com/tonn.tech/' },
+        ].map((sponsor, index) => (
+          <a 
+            key={index}
+            href={sponsor.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-4 aspect-square flex items-center justify-center border border-gray-200"
+          >
+            {sponsor.logo ? (
+              <img 
+                src={sponsor.logo}
+                alt={sponsor.name}
+                className="w-full h-full object-contain"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 rounded-md flex items-center justify-center">
+                <span className="text-gray-400 text-xs sm:text-sm font-medium text-center">
+                  {sponsor.name}
+                </span>
               </div>
-            ))}
-          </div>
+            )}
+          </a>
+        ))}
+      </div>
         </section>
       </div>
 
