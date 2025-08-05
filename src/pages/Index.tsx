@@ -383,13 +383,21 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
             {upcomingMatches.map((match) => (
               <Card key={match.id} className="shadow-lg hover:shadow-xl transition-shadow">
-                <CardHeader className="bg-gradient-to-r from-[#0099D8] to-[#0272E7] text-white">
+                <CardHeader className="bg-gradient-to-r from-[#0099D8] to-[#0272E7] text-white print:hidden">
                   <CardTitle className="text-center text-lg sm:text-xl">
                     {match.homeTeam} x {match.awayTeam}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-4 sm:p-6">
-                  <div className="space-y-4">
+                  {/* Print format - simple list */}
+                  <div className="hidden print:block match-print-format">
+                    <span className="font-medium">{match.homeTeam} X {match.awayTeam}</span>
+                    <span>{formatDateToBR(match.date)}</span>
+                    <span>{match.time}</span>
+                  </div>
+                  
+                  {/* Screen format - cards */}
+                  <div className="space-y-4 print:hidden">
                     <div className="flex flex-col sm:flex-row justify-between items-center gap-4 mb-4">
                       <TeamBadge teamName={match.homeTeam} />
                       <span className="text-2xl sm:text-3xl font-bold text-[#0272E7]">VS</span>
@@ -411,7 +419,7 @@ const Index = () => {
                       </div>
                     </div>
                     
-                    <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-3 pt-4 print:hidden">
+                    <div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-3 pt-4">
                       <SupportButton buttonId={`upcoming-${match.id}`} />
                       <Button 
                         variant="outline" 
