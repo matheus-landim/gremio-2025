@@ -143,10 +143,10 @@ All colors MUST be HSL.
     padding-right: 1rem !important;
   }
 
-  /* Print section separation */
+  /* Print section separation 
   .printable-section {
     page-break-after: always;
-  }
+  }*/
 
   .printable-section:last-child {
     page-break-after: auto;
@@ -192,7 +192,7 @@ All colors MUST be HSL.
     grid-template-columns: 2fr 1fr 1fr !important;
     gap: 1rem !important;
     padding: 0.5rem 0 !important;
-    border-bottom: 1px solid #e5e7eb !important;
+    border-bottom: 1px solid #ffffff !important;
     font-size: 1rem !important;
     line-height: 1.5 !important;
     align-items: center !important;
