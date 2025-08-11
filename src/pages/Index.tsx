@@ -169,25 +169,17 @@ const Index = () => {
     // Primeira mensagem: agradecimento
     toast({
       title: "Obrigado pelo seu apoio!",
-      description: "Seu apoio é muito importante para nós!"
+      description: "Seu apoio é muito importante para nós!",
+      duration: 700,
     });
-    
-    // Segunda mensagem: notificação após um pequeno delay
-    setTimeout(() => {
-      toast({
-        title: "Apoio registrado!",
-        description: "Um usuário demonstrou seu apoio ao time!"
-      });
-    }, 1500);
 
-    // Remover animação após 600ms
     setTimeout(() => {
       setAnimatingButtons(prev => {
         const newSet = new Set(prev);
         newSet.delete(buttonId);
         return newSet;
       });
-    }, 600);
+    }, 700);
   };
 
   const handleWhatsAppShare = (match: Match) => {
@@ -449,21 +441,6 @@ const Index = () => {
               <Button onClick={() => handlePrint('table-section')} variant="outline" className="text-sm">
                 <Printer className="w-4 h-4 mr-2" />
                 Imprimir
-              </Button>
-              <Button 
-                onClick={() => {
-                  const message = `CAMPEONATO INTERNO - Grêmio Cotia/SP\n\nProgramação Completa:\n\n${matches.map(match => 
-                    `${match.homeTeam} x ${match.awayTeam}\n${formatDateToBR(match.date)} - ${match.time}\n${match.venue}\n${match.status === 'finished' ? `Resultado: ${match.homeScore}-${match.awayScore}` : 'A realizar'}\n`
-                  ).join('\n')}`;
-                  
-                  const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
-                  window.open(whatsappUrl, '_blank');
-                }}
-                variant="outline"
-                className="text-sm"
-              >
-                <Share2 className="w-4 h-4 mr-2" />
-                Compartilhar
               </Button>
             </div>
           </div>
