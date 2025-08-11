@@ -559,7 +559,7 @@ const Index = () => {
           { logo: sponsorAmplios, name: 'Amplios', url: 'https://www.agenciaamplios.com.br' },
           { logo: sponsorAya, name: 'Aya', url: 'https://www.clinicaaya.com.br/' },
           { logo: sponsorBorges, name: 'Borges', url: 'https://www.instagram.com/borges_consultoria' },
-          { logo: sponsorCae, name: 'Cae', url: 'https://www.instagram.com/brillusesteticaautomotiva/' },
+          { logo: sponsorCae, name: 'Cae', url: 'https://www.instagram.com/caeclubempresarios/' },
           { logo: sponsorVersatil, name: 'Versátil', url: 'https://www.versatilseg.com.br' },
           { logo: sponsorConstrubenx, name: 'Construbenx', url: 'hhttps://construbenx.com.br/' },
           { logo: sponsorBrillus, name: 'Brillus', url: 'https://www.instagram.com/brillusesteticaautomotiva/' },
